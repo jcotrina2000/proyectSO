@@ -4,16 +4,10 @@
 #include<math.h>
 #include<time.h>
 #include<stdbool.h>
+#include <sys/ipc.h> 
+#include <sys/shm.h> 
+#include"lib.c"
 
-bool searchvalue(int arr[], int size, int value);
-
-bool searchvalue(int arr[],int size,int value){
-     for(int i=0;i<size;i++){
-         if(arr[i]==value){
-            return true;
-         }
-     }
-}
 
 int main(int argc, char **argv){
 	char *grilla, *num_restaurante, *intervalo, *motorizados, *km_distancia; 	
@@ -42,103 +36,40 @@ int main(int argc, char **argv){
 	}	
 
 	printf("Grilla de %dx%d, %d restaurantes, intervalo %d milisegundos, %d motorizados, %d kilómetros de distancia\n", grilla_n, grilla_n, num_restaurante_n, intervalo_n, motorizados_n, km_distancia_n);
+	/*Región de memoria 1 para motorizados*/
+	int key = ftok(".", 34);
+	int *arr;
+	int shmid = shmget(key,sizeof(int)*2,0666|IPC_CREAT);
 
-	/*TDA para grilla nxn*/
+	arr = (int *)shmat(shmid, NULL, 0);
+	arr[0] = grilla_n;
+	arr[1] = motorizados_n;
 
-	typedef struct{
-		int coord_x;
-		int coord_y;
-	}Coordenadas;
+    	shmdt((void *) arr);
 
+	/*Región de memoria 2 para restaurantes*/
+	int key2 = ftok("shmfile", 35);
+	int *arr2;
+	int shmid2 = shmget(key2, sizeof(int)*2, 0666|IPC_CREAT);
+
+	arr2 = (int*)shmat(shmid2, NULL, 0);
+	arr2[0] = grilla_n;
+	arr2[1] = num_restaurante_n;
+	
+	shmdt((void *) arr2);
+
+	/*Prueba instancia estructuras*/
         int j,i,n, ind;
 	int lim = grilla_n/2, lim_cond = (grilla_n/2) * -1;
         int c = (int)pow(grilla_n, 2);
-	Coordenadas* grilla_completa = malloc(c * sizeof *grilla_completa);
-	//Coordenadas* elegidos = malloc(num_restaurante_n + motorizados_n * sizeof *elegidos);
 	Coordenadas* motorizado = malloc(motorizados_n * sizeof *motorizado);
 	Coordenadas* restaurante = malloc(num_restaurante_n * sizeof *restaurante);
-
-	srand(time(NULL));
-	ind = 0;
-	for(j = lim; j >= lim_cond; j--){
-		for(i = lim_cond; i <= lim; i++){
-			grilla_completa[ind].coord_x = i;
-			grilla_completa[ind].coord_y = j;
-			ind = ind + 1;
-		 }	
-	}
+	Coordenadas* grilla_completa = agregar_coordenadas_completas(c, lim, lim_cond);
+	
 	for(n = 0; n < c; n++){
 		printf("(%d,%d)\n", grilla_completa[n].coord_x, grilla_completa[n].coord_y);
-	}
-
-	int n_r = 0, n_m = 0, size_elegidos = num_restaurante_n + motorizados_n;
-	int i_a_e[size_elegidos];
-	while(n_r < num_restaurante_n){
-		int randomly = rand() % c;
-		bool f = searchvalue(i_a_e, size_elegidos, randomly);
-		if(!f){
-			i_a_e[n_r] = randomly;
-			restaurante[n_r].coord_x = grilla_completa[randomly].coord_x;
-			restaurante[n_r].coord_y = grilla_completa[randomly].coord_y;	
-			n_r++;
-		}
 	
 	}
 
-	while(n_m < motorizados_n){
-		int random_n = rand() % c;
-		bool f1 = searchvalue(i_a_e, size_elegidos, random_n);
-		if(!f1){
-			i_a_e[n_r+n_m] = random_n;
-			motorizado[n_m].coord_x = grilla_completa[random_n].coord_x;
-			motorizado[n_m].coord_y = grilla_completa[random_n].coord_y;
-			n_m++;
-		}
-	
-	}
-	
-
-	printf("\n");
-
-	printf("Imprimir coordenadas restaurantes\n");
-
-	for(int siu = 0; siu < num_restaurante_n; siu++){
-		printf("(%d, %d)\n",restaurante[siu].coord_x, restaurante[siu].coord_y);
-	}
-
-
-	printf("\n");
-
-	printf("Imprimir coordenadas motorizados\n");
-	for(int siuu = 0; siuu < motorizados_n; siuu++){
-		printf("(%d,%d)\n", motorizado[siuu].coord_x, motorizado[siuu].coord_y);
-	}
-
-	printf("\n");
-
-
-	int r, s;
-        
-	//motorizado
-	/*double calcularDistancia(int x1, int y1, int x2, int y2){
-            return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
-        }*/
-
-        for(r = 0; r < grilla_n-1; r++){
-            /* Draw Top */
-            for(s = 0; s < grilla_n-1; s++)
-                printf("+--");
-            printf("+\n");
-
-            /* Draw Middle */
-            for(s = 0; s < grilla_n-1; s++)
-                printf("|  ");
-            printf("|\n");
-        }
-
-        /* Draw Bottom */
-        for(s = 0; s < grilla_n-1; s++)
-            printf("+--");
-        printf("+\n");
-
+	srand(time(NULL));
 }
