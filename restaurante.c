@@ -66,7 +66,6 @@ int main(){
 	shmdt((void *) arr3);	
 	
 	
-	
 	printf("Coordenadas restaurantes aleatoria\n");
 	for(int y = 0; y < n_restaurantes; y++){
 		printf("(%d,%d)\n", grilla_restaurantes[y].coord_x, grilla_restaurantes[y].coord_y);
@@ -87,10 +86,8 @@ int main(){
 
         //signal(SIGINT, cerrarServidor);
 
-
 	max_clients = c - n_restaurantes;
 	printf("Max clients size: %d\n", max_clients);
-
 
 	client_len = sizeof(client_address);
 	client_sockfd = accept(server_sockfd, (struct sockaddr *) &client_address, &client_len);
@@ -99,13 +96,12 @@ int main(){
         conta = 0;
 	do{
 		//read(client_sockfd, &id_client, sizeof(int));
-	//	pids[id_client++] = fork();
-	//	if(pids[id_client - 1] == 0){
+	        //pids[id_client++] = fork();
+	        //if(pids[id_client - 1] == 0){
 		read(client_sockfd, &cli_pid, sizeof(pid_t));
 		if(fork() == 0){
 			server_pid = getpid();
                         //signal(SIGINT, desconectarPorSenial);
-
 			printf("Cliente recibido : %d\n", cli_pid);
 			write(client_sockfd, &server_pid, sizeof(pid_t));
         	}
@@ -115,42 +111,9 @@ int main(){
 
 	}
 	while(1);
-	/*{
-        	read(client_sockfd, &server_pid, sizeof(pid_t));
-		printf("Nuevo cliente : %d\n", server_pid);
-	//pid_t server_pid = getpid();
-	        write(client_sockfd, &server_pid, sizeof(pid_t));
-      	}*/
-	
-	
-	/*while(true){
-		client_len = sizeof(client_address);
-		client_sockfd = accept(server_sockfd, (struct sockaddr *) &client_address, &client_len);
-		
-		if((pid = fork()) == 0){
-			close(server_sockfd);
-			while(1){	
-				int sensor_reading;
-				//printf("server waiting\n");
-				rc = read(client_sockfd, &sensor_reading, 1);
-				printf("Lectura valor sensor = %d\n", sensor_reading);	
-				write(client_sockfd, &sensor_reading, 1);
-			}
-		}
-	}*/
 	
 	printf("after accept()... client_sockfd = %d\n", client_sockfd) ; 
 	
-	/*while(1)
-	{
-		int sensor_reading;
-		//printf("server waiting\n");
-		rc = read(client_sockfd, &sensor_reading, 1);
-		printf("Lectura valor sensor = %d\n", sensor_reading );	
-		write(client_sockfd, &sensor_reading, 1);
-	}*/
-	//tupla = make_tuple(sensor_reading)
-	//printf("");
 
 	printf("server exiting\n");
 
