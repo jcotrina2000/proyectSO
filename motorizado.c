@@ -12,6 +12,7 @@
 #include"lib.c"
 
 int main(){
+        /*Región de memoria compartida*/
         int *buf = malloc(2 * sizeof(int));	
 	int key = ftok(".", 34);
 	int *arr;

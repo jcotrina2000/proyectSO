@@ -30,7 +30,7 @@ int main(int argc, char **argv){
 	return -1;
         }
         
-        if(grilla_n <= 0 || num_restaurante_n <= 0 || intervalo_n <= 0 || motorizados_n <= 0 || km_distancia <= 0){
+        if(grilla_n <= 0 || num_restaurante_n <= 0 || intervalo_n <= 0 || motorizados_n <= 0 || km_distancia_n <= 0){
 		fprintf(stderr, "El valor de los parámetros debe ser mayor a cero");
 	return -1;
 	}	
@@ -57,6 +57,17 @@ int main(int argc, char **argv){
 	arr2[1] = num_restaurante_n;
 	
 	shmdt((void *) arr2);
+	
+	/*Región de memoria 3 para clientes*/
+	int key3 = ftok("shm", 36);
+	int *arr3;
+	int shmid3 = shmget(key3, sizeof(int)*2, 0666|IPC_CREAT);
+
+	arr3 = (int*)shmat(shmid3, NULL, 0);
+	arr3[0] = grilla_n;
+	arr3[1] = num_restaurante_n;
+	
+	shmdt((void *) arr3);
 
 	/*Prueba instancia estructuras*/
         int j,i,n, ind;
