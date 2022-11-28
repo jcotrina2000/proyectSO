@@ -8,7 +8,7 @@
 #include <sys/shm.h> 
 #include"lib.c"
 
-
+/*Programa principal ChasquiEats*/
 int main(int argc, char **argv){
 	char *grilla, *num_restaurante, *intervalo, *motorizados, *km_distancia; 	
 	if(argc != 6){
@@ -25,17 +25,22 @@ int main(int argc, char **argv){
 	
 	printf("\n");
 
+	/*Validar que el tamaño de la grilla sea impar*/
         if (grilla_n % 2 == 0) {
 		fprintf(stderr,"El valor de la grilla debe ser un número impar\n");	
 	return -1;
         }
         
+	/*Validar que los parámetros sean valores mayores a cero*/
         if(grilla_n <= 0 || num_restaurante_n <= 0 || intervalo_n <= 0 || motorizados_n <= 0 || km_distancia_n <= 0){
 		fprintf(stderr, "El valor de los parámetros debe ser mayor a cero");
 	return -1;
-	}	
+	}
 
 	printf("Grilla de %dx%d, %d restaurantes, intervalo %d milisegundos, %d motorizados, %d kilómetros de distancia\n", grilla_n, grilla_n, num_restaurante_n, intervalo_n, motorizados_n, km_distancia_n);
+	
+	srand(time(NULL));
+	
 	/*Región de memoria 1 para motorizados*/
 	int key = ftok(".", 34);
 	int *arr;
@@ -81,6 +86,4 @@ int main(int argc, char **argv){
 		printf("(%d,%d)\n", grilla_completa[n].coord_x, grilla_completa[n].coord_y);
 	
 	}
-
-	srand(time(NULL));
 }
