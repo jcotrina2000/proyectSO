@@ -108,14 +108,13 @@ int main(){
 
 			printf("Cliente recibido : %d\n", cli_pid);
 			write(client_sockfd, &server_pid, sizeof(pid_t));
-			conta++;
         	}
 		else{
 			wait(NULL);
 		}
 
 	}
-	while(conta < n_clientes);
+	while(1);
 	/*{
         	read(client_sockfd, &server_pid, sizeof(pid_t));
 		printf("Nuevo cliente : %d\n", server_pid);

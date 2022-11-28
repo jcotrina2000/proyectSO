@@ -28,7 +28,7 @@
 
 
 /*Declaración de variables globales*/
-int  fd_cli, cli_pid, res_pid;
+int  fd_cli, res_pid;
 int rc, len, id_client;
 pid_t pid;
 
@@ -64,7 +64,7 @@ int main(){
 	//printf("Coord X : %d, Coord Y : %d\n", cli.coord_x, cli.coord_y);
 
 	printf("Programando de lado del cliente\n");
-
+	int cli_pid;
   	srand(time(NULL));   
 
   	//Creación del socket para el cliente.
@@ -90,26 +90,25 @@ int main(){
 
         signal(SIGINT, desconectarPorSenial);
 
-
-        //id_client = 1;
 	pid_t* pids_r = malloc(n_clientes + sizeof(pid_t));
-	int cont = 0;
-	while(cont < n_clientes){
+
+	while(1){
 		//int conta = 0;
 		//while(conta < n_clientes){
 		if(fork() == 0){
-		        Coordenadas cli =  coordCliente(grilla_completa,c);
-		        if(!buscarIndice(grilla_restaurante, n_restaurante, cli)){
-				cli_pid = getpid();
-				write(fd_cli, &cli_pid, sizeof(pid_t));
+			cli_pid =getpid();
+		       //oordenadas cli =  coordCliente(grilla_completa,c);
+		       //if(!buscarIndice(grilla_restaurante, n_restaurante, cli)){
+			//cli_pid = getpid();
+			write(fd_cli, &cli_pid, sizeof(pid_t));
 			//cont++;
-				read(fd_cli, &res_pid, sizeof(pid_t));
-                		if(DEBUG) printf("Cliente # %d - Restaurante # %d\n",cli_pid, res_pid);
-			}else{
-				wait(NULL);
-			}
+			read(fd_cli, &res_pid, sizeof(pid_t));
+                	if(DEBUG) printf("Cliente # %d - Restaurante # %d\n",cli_pid, res_pid);
+		}else{
+			wait(NULL);
 		}
 	}
+
 	close(fd_cli);
 	exit(0);
   
