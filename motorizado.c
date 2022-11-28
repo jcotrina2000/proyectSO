@@ -40,7 +40,7 @@ int main(){
 
 }
 
-// structure for message queue
+/*Paso de mensajes para recibir precio aleatorio del cliente*/
 /*struct mesg_buffer {
 	long mesg_type;
 	char mesg_text[100];
