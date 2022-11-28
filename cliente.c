@@ -53,15 +53,12 @@ int main(){
 
 	//TDA para cliente
 	int n_grilla = buf[0], n_restaurante = buf[1];
-	printf("N_grilla : %d, N_Restaurante : %d\n", n_grilla, n_restaurante);
 	int lim = n_grilla/2, lim_cond = (n_grilla/2) * -1, c = (int)pow(n_grilla,2);
 	Coordenadas* grilla_completa = agregar_coordenadas_completas(c, lim, lim_cond);
 	srand(time(NULL));
 	Coordenadas* grilla_restaurante = grilla_aleatoria(c, n_restaurante, grilla_completa);
 	int n_clientes = c - n_restaurante;
 	Coordenadas* grilla_clientes = malloc(n_clientes * sizeof(Coordenadas));
-	//Coordenadas cli =  coordCliente(grilla_completa,c);      
-	//printf("Coord X : %d, Coord Y : %d\n", cli.coord_x, cli.coord_y);
 
 	printf("Programando de lado del cliente\n");
 	int cli_pid;
@@ -74,16 +71,16 @@ int main(){
 		return -1 ; 
 	}
   	
-  	  /*Inicializar el número de puerto y direcciones*/
-	  struct sockaddr_in address;
-	  address.sin_family = AF_INET;
-	  address.sin_addr.s_addr = inet_addr("127.0.0.1");
-	  address.sin_port = htons(7734);
-	  len = sizeof(address);
+  	 /*Inicializar el número de puerto y direcciones*/
+	 struct sockaddr_in address;
+	 address.sin_family = AF_INET;
+	 address.sin_addr.s_addr = inet_addr("127.0.0.1");
+	 address.sin_port = htons(7734);
+	 len = sizeof(address);
 
-	  /*Iniciar la conexión*/
-	  int result = connect(fd_cli, (struct sockaddr *)&address, len);
-	if(result < 0){
+	 /*Iniciar la conexión*/
+	 int result = connect(fd_cli, (struct sockaddr *)&address, len);
+	 if(result < 0){
 		perror("Error de conexión");
 		exit(-1);
 	}
@@ -93,15 +90,9 @@ int main(){
 	pid_t* pids_r = malloc(n_clientes + sizeof(pid_t));
 
 	while(1){
-		//int conta = 0;
-		//while(conta < n_clientes){
 		if(fork() == 0){
 			cli_pid =getpid();
-		       //oordenadas cli =  coordCliente(grilla_completa,c);
-		       //if(!buscarIndice(grilla_restaurante, n_restaurante, cli)){
-			//cli_pid = getpid();
 			write(fd_cli, &cli_pid, sizeof(pid_t));
-			//cont++;
 			read(fd_cli, &res_pid, sizeof(pid_t));
                 	if(DEBUG) printf("Cliente # %d - Restaurante # %d\n",cli_pid, res_pid);
 		}else{
@@ -121,12 +112,8 @@ void desconectarPorSenial(int sign){
 }
 
 
-    /*for(int n = 0; n < 5; n++){
-	    printf("Hijo : %d, id : %d\n", n+1, ids[n]);
-    }
-
-// structure for message queue
-struct mesg_buffer {
+/*Paso de mensajes para enviar precio aleatorio del cliente*/
+/*struct mesg_buffer {
 	long mesg_type;
 	char mesg_text[100];
 } message;
